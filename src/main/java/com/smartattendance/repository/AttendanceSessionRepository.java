@@ -18,4 +18,20 @@ public interface AttendanceSessionRepository extends JpaRepository<AttendanceSes
             LocalDate attendanceDate,
             String status);
 
+    
+    AttendanceSession findByTeacherIdAndSubjectAndLectureAndClassTypeAndAttendanceDateAndStatus(
+
+            Integer teacherId,
+
+            String subject,
+
+            String lecture,
+
+            String classType,
+
+            LocalDate attendanceDate,
+
+            String status
+
+    );
 }

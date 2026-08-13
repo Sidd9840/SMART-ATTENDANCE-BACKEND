@@ -14,6 +14,13 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+    
+    @PostMapping("/register")
+    public String registerAdmin(@RequestBody Admin admin){
+
+        return adminService.registerAdmin(admin);
+
+    }
 
     // -----------------------------
     // Save Admin

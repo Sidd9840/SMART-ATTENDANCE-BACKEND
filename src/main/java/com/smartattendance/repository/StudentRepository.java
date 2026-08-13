@@ -10,7 +10,7 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
 
     long count();
 
-    Student findByEmailAndPassword(String email, String password);
+   
 
     Student findByEmail(String email);
 

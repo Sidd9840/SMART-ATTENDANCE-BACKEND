@@ -29,39 +29,91 @@ public class AttendanceService {
         // -----------------------------
         // Holiday Check
         // -----------------------------
+//        DayOfWeek day = LocalDate.now().getDayOfWeek();
+//
+//        if (day == DayOfWeek.SATURDAY ||
+//            day == DayOfWeek.SUNDAY) {
+//
+//            throw new RuntimeException(
+//                    "Today is Holiday. Attendance cannot be marked.");
+//
+//        }
 
-        DayOfWeek day = LocalDate.now().getDayOfWeek();
+        // -----------------------------
+        // Attendance Time & Lecture
+        // -----------------------------
+       
 
-        if(day == DayOfWeek.SATURDAY ||
-           day == DayOfWeek.SUNDAY){
+//        if (!currentTime.isBefore(LocalTime.of(9, 0)) &&
+//            !currentTime.isAfter(LocalTime.of(9, 15))) {
+//
+//            lecture = "Lecture 1";
+//
+//        }
+//
+//        else if (!currentTime.isBefore(LocalTime.of(11, 0)) &&
+//                 !currentTime.isAfter(LocalTime.of(11, 15))) {
+//
+//            lecture = "Lecture 2";
+//
+//        }
+//
+//        else if (!currentTime.isBefore(LocalTime.of(14, 0)) &&
+//                 !currentTime.isAfter(LocalTime.of(14, 15))) {
+//
+//            lecture = "Lecture 3";
+//
+//        }
+//
+//        else if (!currentTime.isBefore(LocalTime.of(16, 0)) &&
+//                 !currentTime.isAfter(LocalTime.of(16, 15))) {
+//
+//            lecture = "Lecture 4";
+//
+//        }
+//
+//        else {
+//
+//            throw new RuntimeException(
+//                    "Attendance can only be marked during the first 15 minutes of each lecture.");
+//
+//        }
 
-            throw new RuntimeException(
-                    "Today is Holiday. Attendance cannot be marked."
-            );
-
-        }
+       
 
         // -----------------------------
         // Duplicate Attendance Check
         // -----------------------------
-
         Attendance existingAttendance =
-                attendanceRepository.findByStudentIdAndSubjectAndAttendanceDate(
+                attendanceRepository
+                .findByStudentIdAndTeacherIdAndSubjectAndAttendanceDateAndLectureAndClassType(
+
                         attendance.getStudentId(),
+
+                        attendance.getTeacherId(),
+
                         attendance.getSubject(),
-                        attendance.getAttendanceDate());
+
+                        attendance.getAttendanceDate(),
+
+                        attendance.getLecture(),
+
+                        attendance.getClassType()
+
+                );
 
         if (existingAttendance != null) {
 
-            throw new RuntimeException(
-                    "Attendance already marked for today."
-            );
+        	throw new RuntimeException(
+        	        "Attendance already marked.");
 
         }
 
-        return attendanceRepository.save(attendance);
-    }
+        attendance.setStatus("Present");
 
+        return attendanceRepository.save(attendance);
+
+    }
     // -----------------------------
     // Get All Attendance
     // -----------------------------
@@ -114,7 +166,7 @@ public class AttendanceService {
     // Attendance Percentage
     // -----------------------------
     public AttendancePercentageResponse
-    getAttendancePercentage(Integer studentId){
+    getAttendancePercentage(Integer studentId) {
 
         long total =
                 attendanceRepository.countByStudentId(studentId);
@@ -126,7 +178,7 @@ public class AttendanceService {
 
         double percentage = 0;
 
-        if(total > 0){
+        if (total > 0) {
 
             percentage = (present * 100.0) / total;
 
@@ -135,8 +187,7 @@ public class AttendanceService {
         return new AttendancePercentageResponse(
                 total,
                 present,
-                percentage
-        );
+                percentage);
 
     }
 
@@ -145,7 +196,7 @@ public class AttendanceService {
     // -----------------------------
     public List<Attendance> getAttendanceByMonthAndYear(
             int month,
-            int year){
+            int year) {
 
         return attendanceRepository.findByMonthAndYear(
                 month,
@@ -156,11 +207,21 @@ public class AttendanceService {
     // -----------------------------
     // Search Attendance
     // -----------------------------
-    public List<Attendance> searchAttendance(String keyword){
+    public List<Attendance> searchAttendance(String keyword) {
 
         return attendanceRepository
                 .findByStudentNameContainingIgnoreCase(keyword);
 
     }
+    public List<Attendance> search(String keyword, int month, int year) {
+
+        return attendanceRepository.searchAttendance(
+                keyword,
+                month,
+                year
+        );
+
+    }
+
 
 }

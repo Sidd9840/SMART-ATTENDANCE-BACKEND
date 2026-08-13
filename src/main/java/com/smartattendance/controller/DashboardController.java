@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.smartattendance.dto.DashboardResponse;
 import com.smartattendance.service.DashboardService;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @CrossOrigin("*")
@@ -16,11 +17,17 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @GetMapping("/dashboard")
+    public DashboardResponse getDashboard(
+            @RequestParam Integer teacherId) {
 
-    public DashboardResponse getDashboard() {
-
-        return dashboardService.getDashboardData();
+        return dashboardService.getDashboardData(teacherId);
 
     }
 
+    @GetMapping("/admin/dashboard")
+    public DashboardResponse getAdminDashboard() {
+
+        return dashboardService.getAdminDashboard();
+
+    }
 }

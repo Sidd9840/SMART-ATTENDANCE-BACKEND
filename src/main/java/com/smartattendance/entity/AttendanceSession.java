@@ -16,6 +16,7 @@ public class AttendanceSession {
     private Integer id;
 
     private String subject;
+    
 
     private LocalDate attendanceDate;
 
@@ -23,16 +24,35 @@ public class AttendanceSession {
 
     private LocalTime endTime;
 
-    private String status;   // OPEN / CLOSED
+    private String status;
+
+    private Integer teacherId;
+    private String lecture;
+
+    private String classType;
+    // -----------------------------
+    // Teacher Live Location
+    // -----------------------------
+    private Double teacherLatitude;
+
+    private Double teacherLongitude;
+
+    private Double allowedDistance;
 
     public AttendanceSession() {
     }
 
-    public AttendanceSession(Integer id, String subject,
+    public AttendanceSession(
+            Integer id,
+            String subject,
             LocalDate attendanceDate,
             LocalTime startTime,
             LocalTime endTime,
-            String status) {
+            String status,
+            Integer teacherId,
+            Double teacherLatitude,
+            Double teacherLongitude,
+            Double allowedDistance) {
 
         this.id = id;
         this.subject = subject;
@@ -40,6 +60,10 @@ public class AttendanceSession {
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        this.teacherId = teacherId;
+        this.teacherLatitude = teacherLatitude;
+        this.teacherLongitude = teacherLongitude;
+        this.allowedDistance = allowedDistance;
     }
 
     public Integer getId() {
@@ -90,4 +114,53 @@ public class AttendanceSession {
         this.status = status;
     }
 
+    public Double getTeacherLatitude() {
+        return teacherLatitude;
+    }
+
+    public void setTeacherLatitude(Double teacherLatitude) {
+        this.teacherLatitude = teacherLatitude;
+    }
+
+    public Double getTeacherLongitude() {
+        return teacherLongitude;
+    }
+
+    public void setTeacherLongitude(Double teacherLongitude) {
+        this.teacherLongitude = teacherLongitude;
+    }
+
+    public Double getAllowedDistance() {
+        return allowedDistance;
+    }
+
+    public void setAllowedDistance(Double allowedDistance) {
+        this.allowedDistance = allowedDistance;
+    }
+
+	
+
+	public Integer getTeacherId() {
+		return teacherId;
+	}
+
+	public void setTeacherId(Integer teacherId) {
+		this.teacherId = teacherId;
+	}
+	public String getLecture() {
+	    return lecture;
+	}
+
+	public void setLecture(String lecture) {
+	    this.lecture = lecture;
+	}
+
+	public String getClassType() {
+	    return classType;
+	}
+
+	public void setClassType(String classType) {
+	    this.classType = classType;
+	}
+    
 }

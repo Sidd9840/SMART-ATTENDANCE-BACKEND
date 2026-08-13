@@ -20,7 +20,7 @@ public class DashboardService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
-    public DashboardResponse getDashboardData() {
+    public DashboardResponse getDashboardData(Integer teacherId) {
 
         DashboardResponse response = new DashboardResponse();
 
@@ -28,15 +28,30 @@ public class DashboardService {
 
         response.setTotalTeachers(teacherRepository.count());
 
-        response.setTotalAttendance(attendanceRepository.count());
+        response.setTotalAttendance(
+                attendanceRepository.countByTeacherId(teacherId));
 
         response.setPresent(
-                attendanceRepository.countByStatus("Present"));
+                attendanceRepository.countByTeacherIdAndStatus(
+                        teacherId,
+                        "Present"));
 
         response.setAbsent(
-                attendanceRepository.countByStatus("Absent"));
+                attendanceRepository.countByTeacherIdAndStatus(
+                        teacherId,
+                        "Absent"));
 
         return response;
     }
 
+    public DashboardResponse getAdminDashboard() {
+
+        DashboardResponse response = new DashboardResponse();
+
+        response.setTotalStudents(studentRepository.count());
+
+        response.setTotalTeachers(teacherRepository.count());
+
+        return response;
+    }
 }

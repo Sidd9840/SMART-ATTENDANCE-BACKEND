@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.smartattendance.entity.Teacher;
 import com.smartattendance.repository.TeacherRepository;
 
@@ -13,6 +13,8 @@ public class TeacherService {
 
     @Autowired
     private TeacherRepository teacherRepository;
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     // -----------------------------
     // Register Teacher
@@ -31,6 +33,10 @@ public class TeacherService {
 
         }
 
+        teacher.setPassword(
+                passwordEncoder.encode(teacher.getPassword())
+        );
+
         teacherRepository.save(teacher);
 
         return "Teacher Registered Successfully";
@@ -41,6 +47,10 @@ public class TeacherService {
     // Save Teacher
     // -----------------------------
     public Teacher saveTeacher(Teacher teacher){
+
+        teacher.setPassword(
+                passwordEncoder.encode(teacher.getPassword())
+        );
 
         return teacherRepository.save(teacher);
 
@@ -85,7 +95,8 @@ public class TeacherService {
                     teacher.getEmail());
 
             existingTeacher.setPassword(
-                    teacher.getPassword());
+                    passwordEncoder.encode(teacher.getPassword())
+            );
 
             existingTeacher.setSubject(
                     teacher.getSubject());
@@ -108,13 +119,20 @@ public class TeacherService {
     // Teacher Login
     // -----------------------------
     public Teacher loginTeacher(String email,
-                                String password){
+            String password){
 
-        return teacherRepository
-                .findByEmailAndPassword(email,password);
+Teacher teacher = teacherRepository.findByEmail(email);
 
-    }
+if(teacher != null &&
+passwordEncoder.matches(password, teacher.getPassword())){
 
+return teacher;
+
+}
+
+return null;
+
+}
     public Teacher getTeacherById(Integer id){
 
         return teacherRepository.findById(id).orElse(null);

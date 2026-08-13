@@ -9,5 +9,5 @@ public class SmartAttendanceSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SmartAttendanceSystemApplication.class, args);
 	}
-
+	
 }

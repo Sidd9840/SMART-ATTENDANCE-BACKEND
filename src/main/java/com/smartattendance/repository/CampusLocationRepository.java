@@ -3,11 +3,10 @@ package com.smartattendance.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.smartattendance.entity.Admin;
+import com.smartattendance.entity.CampusLocation;
 
 @Repository
-public interface AdminRepository extends JpaRepository<Admin, Integer> {
-
-    Admin findByEmail(String email);
+public interface CampusLocationRepository
+        extends JpaRepository<CampusLocation, Integer> {
 
 }

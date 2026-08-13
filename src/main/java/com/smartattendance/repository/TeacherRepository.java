@@ -9,14 +9,13 @@ import com.smartattendance.entity.Teacher;
 public interface TeacherRepository extends JpaRepository<Teacher, Integer> {
 
     // Login
-    Teacher findByEmailAndPassword(String email, String password);
-
+    
+    Teacher findByEmail(String email);
     // Registration Validation
     boolean existsByEmail(String email);
 
     boolean existsByEmployeeId(String employeeId);
 
-    // Dashboard
-    long count();
+    
 
 }
