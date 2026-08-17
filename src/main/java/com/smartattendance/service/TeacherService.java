@@ -74,46 +74,55 @@ public class TeacherService {
 
     }
 
-    // -----------------------------
-    // Update Teacher
-    // -----------------------------
-    public Teacher updateTeacher(Integer id,
-                                 Teacher teacher){
+ // -----------------------------
+ // Update Teacher
+ // -----------------------------
+ public Teacher updateTeacher(Integer id, Teacher teacher){
 
-        Teacher existingTeacher =
-                teacherRepository.findById(id).orElse(null);
+     Teacher existingTeacher =
+             teacherRepository.findById(id).orElse(null);
 
-        if(existingTeacher != null){
+     if(existingTeacher == null){
+         return null;
+     }
 
-            existingTeacher.setEmployeeId(
-                    teacher.getEmployeeId());
+     existingTeacher.setEmployeeId(
+             teacher.getEmployeeId()
+     );
 
-            existingTeacher.setName(
-                    teacher.getName());
+     existingTeacher.setName(
+             teacher.getName()
+     );
 
-            existingTeacher.setEmail(
-                    teacher.getEmail());
+     existingTeacher.setEmail(
+             teacher.getEmail()
+     );
 
-            existingTeacher.setPassword(
-                    passwordEncoder.encode(teacher.getPassword())
-            );
+     existingTeacher.setSubject(
+             teacher.getSubject()
+     );
 
-            existingTeacher.setSubject(
-                    teacher.getSubject());
+     existingTeacher.setDepartment(
+             teacher.getDepartment()
+     );
 
-            existingTeacher.setDepartment(
-                    teacher.getDepartment());
+     existingTeacher.setPhone(
+             teacher.getPhone()
+     );
 
-            existingTeacher.setPhone(
-                    teacher.getPhone());
+     // Password update only when a new password is provided
+     if(teacher.getPassword() != null &&
+        !teacher.getPassword().trim().isEmpty()){
 
-            return teacherRepository.save(existingTeacher);
+         existingTeacher.setPassword(
+                 passwordEncoder.encode(
+                         teacher.getPassword()
+                 )
+         );
+     }
 
-        }
-
-        return null;
-
-    }
+     return teacherRepository.save(existingTeacher);
+ }
 
     // -----------------------------
     // Teacher Login

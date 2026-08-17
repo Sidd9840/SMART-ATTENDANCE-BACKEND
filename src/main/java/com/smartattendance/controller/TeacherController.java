@@ -9,6 +9,8 @@ import com.smartattendance.dto.LoginRequest;
 import com.smartattendance.entity.Teacher;
 import com.smartattendance.service.TeacherService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/teachers")
 @CrossOrigin("*")
@@ -79,16 +81,23 @@ public class TeacherController {
     // -----------------------------
     @PostMapping("/login")
     public Teacher loginTeacher(
-            @RequestBody LoginRequest loginRequest){
+            @RequestBody LoginRequest loginRequest,
+            HttpSession session){
 
-        return teacherService.loginTeacher(
-
+        Teacher teacher = teacherService.loginTeacher(
                 loginRequest.getEmail(),
-
                 loginRequest.getPassword()
-
         );
 
+        if (teacher != null) {
+
+            session.setAttribute("userId", teacher.getId());
+            session.setAttribute("username", teacher.getName());
+            session.setAttribute("email", teacher.getEmail());
+            session.setAttribute("role", "Teacher");
+        }
+
+        return teacher;
     }
 
     @GetMapping("/{id}")

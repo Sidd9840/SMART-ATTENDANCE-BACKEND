@@ -7,6 +7,8 @@ import com.smartattendance.dto.LoginRequest;
 import com.smartattendance.entity.Admin;
 import com.smartattendance.service.AdminService;
 
+import jakarta.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/admin")
 @CrossOrigin("*")
@@ -34,14 +36,22 @@ public class AdminController {
     }
 
     @PostMapping("/login")
-    public Admin login(@RequestBody LoginRequest request) {
+    public Admin login(
+            @RequestBody LoginRequest request,
+            HttpSession session) {
 
         Admin admin = adminService.login(
                 request.getEmail(),
                 request.getPassword());
 
-        System.out.println("Login Email : " + request.getEmail());
-        System.out.println("Admin Found : " + admin);
+        if (admin != null) {
+
+            session.setAttribute("userId", admin.getId());
+            session.setAttribute("username", admin.getUsername());
+            session.setAttribute("email", admin.getEmail());
+            session.setAttribute("role", "Admin");
+
+        }
 
         return admin;
     }

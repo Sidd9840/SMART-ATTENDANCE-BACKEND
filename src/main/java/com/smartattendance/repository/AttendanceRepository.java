@@ -11,27 +11,37 @@ import org.springframework.stereotype.Repository;
 import com.smartattendance.entity.Attendance;
 
 @Repository
-public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
+public interface AttendanceRepository
+        extends JpaRepository<Attendance, Integer> {
 
+    // -----------------------------------------
     // Dashboard
+    // -----------------------------------------
+
     long countByStatus(String status);
- // Teacher Dashboard
+
+    // -----------------------------------------
+    // Teacher Dashboard
+    // -----------------------------------------
+
     long countByTeacherId(Integer teacherId);
 
     long countByTeacherIdAndStatus(
             Integer teacherId,
             String status);
 
-    // -----------------------------
+
+    // -----------------------------------------
     // Duplicate Attendance Check
-    // Student + Subject + Date + Lecture
-    // -----------------------------
+    // -----------------------------------------
+
     Attendance findByStudentIdAndSubjectAndAttendanceDateAndLecture(
             Integer studentId,
             String subject,
             LocalDate attendanceDate,
             String lecture);
-    
+
+
     Attendance findByStudentIdAndTeacherIdAndSubjectAndAttendanceDateAndLectureAndClassType(
 
             Integer studentId,
@@ -45,71 +55,170 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
             String lecture,
 
             String classType
-
     );
 
-    // Today's Attendance
-    Attendance findByStudentIdAndAttendanceDate(
-            Integer studentId,
-            LocalDate attendanceDate);
 
+    // -----------------------------------------
+    // Today's Attendance
+    // -----------------------------------------
+
+    Attendance findByStudentIdAndAttendanceDate(
+
+            Integer studentId,
+
+            LocalDate attendanceDate
+    );
+
+
+    // -----------------------------------------
     // Attendance Percentage
+    // -----------------------------------------
+
     long countByStudentId(Integer studentId);
 
-    long countByStudentIdAndStatus(
-            Integer studentId,
-            String status);
 
+    long countByStudentIdAndStatus(
+
+            Integer studentId,
+
+            String status
+    );
+
+
+    // -----------------------------------------
     // Student Attendance
+    // -----------------------------------------
+
     List<Attendance> findByStudentId(Integer studentId);
 
-    // Date Wise Report
-    List<Attendance> findByAttendanceDate(LocalDate attendanceDate);
 
+    // -----------------------------------------
+    // Date Wise Report
+    // -----------------------------------------
+
+    List<Attendance> findByAttendanceDate(
+            LocalDate attendanceDate
+    );
+
+
+    // -----------------------------------------
     // Month & Year Report
+    // -----------------------------------------
+
     @Query("""
            SELECT a
            FROM Attendance a
-           WHERE MONTH(a.attendanceDate)=:month
-           AND YEAR(a.attendanceDate)=:year
+           WHERE MONTH(a.attendanceDate) = :month
+           AND YEAR(a.attendanceDate) = :year
            ORDER BY a.attendanceDate DESC,
                     a.attendanceTime DESC
            """)
     List<Attendance> findByMonthAndYear(
+
             @Param("month") int month,
-            @Param("year") int year);
 
-    // Search By Student Name
-    List<Attendance> findByStudentNameContainingIgnoreCase(String studentName);
+            @Param("year") int year
+    );
 
-    // Search By Subject
-    List<Attendance> findBySubjectContainingIgnoreCase(String subject);
+
+    // -----------------------------------------
+    // Teacher + Month + Year Report
+    // -----------------------------------------
+
     @Query("""
-    		SELECT a
-    		FROM Attendance a
-    		WHERE LOWER(a.studentName) LIKE LOWER(CONCAT('%', :keyword, '%'))
-    		AND MONTH(a.attendanceDate)=:month
-    		AND YEAR(a.attendanceDate)=:year
-    		ORDER BY a.attendanceDate DESC,
-    		         a.attendanceTime DESC
-    		""")
-    		List<Attendance> searchAttendance(
+           SELECT a
+           FROM Attendance a
+           WHERE a.teacherId = :teacherId
+           AND MONTH(a.attendanceDate) = :month
+           AND YEAR(a.attendanceDate) = :year
+           ORDER BY a.attendanceDate DESC,
+                    a.attendanceTime DESC
+           """)
+    List<Attendance> findByTeacherAndMonthAndYear(
 
-    		        @Param("keyword") String keyword,
+            @Param("teacherId") Integer teacherId,
 
-    		        @Param("month") int month,
+            @Param("month") int month,
 
-    		        @Param("year") int year
+            @Param("year") int year
+    );
 
-    		);
-	Attendance findByStudentIdAndAttendanceDateAndSubjectAndLectureAndClassTypeAndTeacherId(
-			Integer id, 
-			LocalDate now,
-			String subject, 
-			String lecture, 
-			String classType, 
-			Integer teacherId);
-	
-	// PDF - Teacher Wise Attendance
-	List<Attendance> findByTeacherId(Integer teacherId);
+
+    // -----------------------------------------
+    // Search By Student Name
+    // -----------------------------------------
+
+    List<Attendance> findByStudentNameContainingIgnoreCase(
+            String studentName
+    );
+
+
+    // -----------------------------------------
+    // Search By Subject
+    // -----------------------------------------
+
+    List<Attendance> findBySubjectContainingIgnoreCase(
+            String subject
+    );
+
+
+ // -----------------------------------------
+ // Teacher + Student + Subject Search
+ // + Month + Year
+ // -----------------------------------------
+
+ @Query("""
+        SELECT a
+        FROM Attendance a
+        WHERE a.teacherId = :teacherId
+        AND LOWER(a.studentName)
+        LIKE LOWER(CONCAT('%', :keyword, '%'))
+        AND LOWER(a.subject)
+        LIKE LOWER(CONCAT('%', :subject, '%'))
+        AND MONTH(a.attendanceDate) = :month
+        AND YEAR(a.attendanceDate) = :year
+        ORDER BY a.attendanceDate DESC,
+                 a.attendanceTime DESC
+        """)
+ List<Attendance> searchAttendance(
+
+         @Param("teacherId") Integer teacherId,
+
+         @Param("keyword") String keyword,
+
+         @Param("subject") String subject,
+
+         @Param("month") int month,
+
+         @Param("year") int year
+ );
+
+
+    // -----------------------------------------
+    // Close Attendance Session
+    // Find Student Attendance
+    // -----------------------------------------
+
+    Attendance findByStudentIdAndAttendanceDateAndSubjectAndLectureAndClassTypeAndTeacherId(
+
+            Integer studentId,
+
+            LocalDate attendanceDate,
+
+            String subject,
+
+            String lecture,
+
+            String classType,
+
+            Integer teacherId
+    );
+
+
+    // -----------------------------------------
+    // PDF - Teacher Wise Attendance
+    // -----------------------------------------
+
+    List<Attendance> findByTeacherId(Integer teacherId);
+
 }

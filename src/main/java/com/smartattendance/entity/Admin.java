@@ -4,7 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class Admin {
 
@@ -16,6 +16,7 @@ public class Admin {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     public Admin() {
