@@ -2,7 +2,6 @@ package com.smartattendance.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
@@ -14,38 +13,58 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)
+            throws Exception {
 
-	    CorsConfiguration configuration =
-	            new CorsConfiguration();
+        http
+            .csrf(csrf -> csrf.disable())
 
-	    configuration.setAllowedOrigins(Arrays.asList(
-	            "https://sidd9840.github.io"
-	    ));
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-	    configuration.setAllowedMethods(Arrays.asList(
-	            "GET",
-	            "POST",
-	            "PUT",
-	            "DELETE",
-	            "OPTIONS"
-	    ));
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/**").permitAll()
+            )
 
-	    configuration.setAllowedHeaders(Arrays.asList(
-	            "*"
-	    ));
+            .formLogin(form -> form.disable())
 
-	    configuration.setAllowCredentials(true);
+            .httpBasic(basic -> basic.disable());
 
-	    UrlBasedCorsConfigurationSource source =
-	            new UrlBasedCorsConfigurationSource();
+        return http.build();
+    }
 
-	    source.registerCorsConfiguration(
-	            "/**",
-	            configuration
-	    );
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
 
-	    return source;
-	}
+        CorsConfiguration configuration =
+                new CorsConfiguration();
+
+        configuration.setAllowedOrigins(Arrays.asList(
+                "https://sidd9840.github.io"
+        ));
+
+        configuration.setAllowedMethods(Arrays.asList(
+                "GET",
+                "POST",
+                "PUT",
+                "DELETE",
+                "OPTIONS"
+        ));
+
+        configuration.setAllowedHeaders(Arrays.asList(
+                "*"
+        ));
+
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
+
+        source.registerCorsConfiguration(
+                "/**",
+                configuration
+        );
+
+        return source;
+    }
 }
