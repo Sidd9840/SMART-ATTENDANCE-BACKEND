@@ -14,75 +14,38 @@ import java.util.Arrays;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http)
-            throws Exception {
+	@Bean
+	public CorsConfigurationSource corsConfigurationSource() {
 
-        http
-            // Disable CSRF for REST API
-            .csrf(csrf -> csrf.disable())
+	    CorsConfiguration configuration =
+	            new CorsConfiguration();
 
-            // Enable CORS
-            .cors(Customizer.withDefaults())
+	    configuration.setAllowedOrigins(Arrays.asList(
+	            "https://sidd9840.github.io"
+	    ));
 
-            // Allow all API requests
-            .authorizeHttpRequests(auth -> auth
+	    configuration.setAllowedMethods(Arrays.asList(
+	            "GET",
+	            "POST",
+	            "PUT",
+	            "DELETE",
+	            "OPTIONS"
+	    ));
 
-                .requestMatchers("/**").permitAll()
+	    configuration.setAllowedHeaders(Arrays.asList(
+	            "*"
+	    ));
 
-                .anyRequest().authenticated()
-            )
+	    configuration.setAllowCredentials(true);
 
-            // Basic Authentication
-            .httpBasic(Customizer.withDefaults())
+	    UrlBasedCorsConfigurationSource source =
+	            new UrlBasedCorsConfigurationSource();
 
-            // Disable default login page
-            .formLogin(form -> form.disable());
+	    source.registerCorsConfiguration(
+	            "/**",
+	            configuration
+	    );
 
-        return http.build();
-    }
-
-
-    // -----------------------------------------
-    // CORS Configuration
-    // -----------------------------------------
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-
-        CorsConfiguration configuration =
-                new CorsConfiguration();
-
-        // Allow Netlify frontend
-        configuration.setAllowedOrigins(Arrays.asList(
-                "https://relaxed-unicorn-630a54.netlify.app"
-        ));
-
-        // Allow HTTP methods
-        configuration.setAllowedMethods(Arrays.asList(
-                "GET",
-                "POST",
-                "PUT",
-                "DELETE",
-                "OPTIONS"
-        ));
-
-        // Allow headers
-        configuration.setAllowedHeaders(Arrays.asList(
-                "*"
-        ));
-
-        // Allow credentials
-        configuration.setAllowCredentials(true);
-
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
-        source.registerCorsConfiguration(
-                "/**",
-                configuration
-        );
-
-        return source;
-    }
+	    return source;
+	}
 }
